@@ -1,0 +1,117 @@
+# ---------------- #
+#   Main Configs   #
+# ---------------- #
+baseurl: ""
+url: "https://YongRui0402.github.io/"
+date_format: "ordinal"
+title: YongRui's Blog
+subtitle: "YongRui's Blog"
+description: "YongRui個人部落格"
+keywords: YongRui
+timezone: Asia/Taipei
+encoding: "utf-8"
+side_bar_repo_limit: 5
+
+
+# ---------------- #
+#      Author      #
+# ---------------- #
+author: Yang, Yong-Rui
+organization: YongRui
+organization_url: https://YongRui0402.github.io/
+github_username: YongRui0402
+location: Taiwan, New Taipei City
+email: yangyongrui0402@gmail.com
+
+# ---------------- #
+#    Navigation    #
+# ---------------- #
+navs:
+  -
+    href: /
+    label: 首頁
+
+  -
+    href: /categories/
+    label: 分類
+
+  -
+    href: /wiki/
+    label: 命令快捷鍵與工具
+
+  -
+    href: /links/
+    label: 連結
+
+  -
+    href: /about/
+    label: 關於
+
+# ---------------- #
+#       RSS        #
+# ---------------- #
+subscribe_rss: /feed.xml
+
+# ---------------- #
+#      Jekyll      #
+# ---------------- #
+markdown: kramdown
+kramdown:
+    input: GFM
+highlighter: rouge
+paginate: 8
+lsi: false
+quiet: false
+excerpt_separator: "\n\n"
+permalink: /:year/:month/:day/:title/
+plugins:
+    - jekyll-github-metadata
+    - rouge
+#     - jekyll-html-pipeline
+    - jekyll-paginate
+    - jekyll-sitemap
+    - jekyll-feed
+    - jemoji
+#     - jekyll-mentions
+collections:
+    wiki:
+        output: true
+        permalink: /wiki/:path/
+    tool:
+        output: true
+        permalink: /tool/:path/
+
+repository: YongRui0402/YongRui0402.github.io
+
+# ---------------- #
+#      Comments    #
+# ---------------- #
+# support provider: disqus, gitment, gitalk
+comments_provider: disqus
+# ！重要！請修改下面這些信息為你自己申請的
+# !!!Important!!! Please modify infos below to yours
+# https://disqus.com
+disqus:
+    username: yang42922-github-io
+# 在使用其它評論組件時可點擊顯示 Disqus
+lazy_load_disqus : true
+
+# https://imsun.net/posts/gitment-introduction/
+gitment:
+    owner: YongRui0402
+    repo: blog-comments
+    oauth:
+        client_id: Ov23liW3MJ1saeoDPfEU
+        client_secret: ${GITMENT_CLIENT_SECRET}
+# https://github.com/gitalk/gitalk#install
+gitalk:
+    owner: YongRui0402
+    repo: blog-comments
+    clientID: Ov23liW3MJ1saeoDPfEU
+    clientSecret: ${GITALK_CLIENT_SECRET}
+
+# ---------------- #
+#    Analytics     #
+# ---------------- #
+google:
+    analytics_id: G-1XSYTQRNTB
