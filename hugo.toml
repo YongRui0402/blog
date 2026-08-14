@@ -14,9 +14,13 @@ summaryLength = 60
 # 公開建置不加 --buildDrafts，draft: true 的文章不會被產出。
 
 [params]
-  description = "韌體、嵌入式與自架服務的工作筆記"
+  # tagline 出現在每頁標頭與首頁；description 給 meta / RSS / og。
+  # 兩者都描述「這裡有什麼內容」，不描述「作者是誰」——
+  # 站上不寫職業、不寫任職單位。技能清單只放在關於頁，那是使用者主動點進去看的。
+  tagline = "踩過的坑、當時的判斷，與會忘記的指令"
+  description = "自架服務、Linux 與開發工具的工作筆記。以實際踩過的問題、當時的判斷依據，以及可重複的解法為主。"
   author = "BDGG"
-  # 對外一律 BDGG。不放真名 / 居住地 / 私人信箱。
+  # 對外一律 BDGG。不放真名 / 居住地 / 私人信箱 / 職業。
   github = "YongRui0402"
   # 文章頂端「本文寫於 X，現況可能已變」的提示，超過這個月數才顯示
   staleAfterMonths = 12

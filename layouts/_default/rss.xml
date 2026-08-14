@@ -1,0 +1,41 @@
+{{- /*
+  自訂 RSS。用內建的 _internal/rss.xml 有兩個問題：
+    1. <description> 讀不到首頁 front matter 的 description，
+       會固定輸出 "Recent content on <站名>"
+    2. 會把「關於」這種非文章頁也放進訂閱源
+  這裡改成只收三個文章型 section，並輸出全文（技術文章在閱讀器裡看全文比較實用）。
+*/ -}}
+{{- $pages := where .Site.RegularPages "Section" "in" (slice "pitfalls" "decisions" "projects") -}}
+{{- $pages = $pages.ByDate.Reverse -}}
+{{- $limit := 30 -}}
+{{- if gt (len $pages) $limit }}{{ $pages = first $limit $pages }}{{ end -}}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>{{ .Site.Title }}</title>
+    <link>{{ .Site.Home.Permalink }}</link>
+    <description>{{ with .Site.Home.Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}</description>
+    <language>{{ .Site.Language.Locale }}</language>
+    <managingEditor>{{ .Site.Params.author }}</managingEditor>
+    <webMaster>{{ .Site.Params.author }}</webMaster>
+    <copyright>{{ .Site.Params.author }} · 內容 CC BY 4.0</copyright>
+    {{- with $pages }}{{ with index . 0 }}
+    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+    {{- end }}{{ end }}
+    <atom:link href="{{ .Permalink }}" rel="self" type="application/rss+xml" />
+    {{- range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      <guid isPermaLink="true">{{ .Permalink }}</guid>
+      <category>{{ .Section }}</category>
+      {{- with .Description }}
+      <description>{{ . }}</description>
+      {{- else }}
+      <description>{{ .Summary | plainify }}</description>
+      {{- end }}
+      <content:encoded>{{ .Content | transform.XMLEscape | safeHTML }}</content:encoded>
+    </item>
+    {{- end }}
+  </channel>
+</rss>

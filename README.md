@@ -1,6 +1,7 @@
 # blog
 
-[blog.羊.tw](https://blog.xn--ht0a.tw) 的原始碼 —— BDGG 的韌體、嵌入式與自架服務筆記。
+[blog.羊.tw](https://blog.xn--ht0a.tw) 的原始碼 ——
+BDGG 的工作筆記:踩過的坑、當時的判斷,與會忘記的指令。
 
 Hugo 靜態站,自製版型,無外部佈景主題依賴。
 
