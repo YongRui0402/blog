@@ -10,6 +10,12 @@ tags:
   - glibc
 toc: true
 draft: false
+hook: "`mv` 成功了，`ls` 看得到檔案，執行卻說 not found。"
+takeaway: "訊息說「找不到 X」的時候，先確認它說的 X 是不是你以為的那個 X。"
+key_points:
+  - "glibc 動態連結的執行檔在 Alpine（musl）上，核心找不到 dynamic loader，`execve` 回 `ENOENT`"
+  - "shell 拿到 `ENOENT` 就印「not found」—— 指的是連結器，不是你的執行檔"
+  - "多階段建置時 build stage 改用 `debian:bookworm-slim`，最終映像照樣可以是 alpine"
 ---
 
 寫一份多階段 Dockerfile,前一層剛把執行檔搬進 `/usr/local/bin/`,

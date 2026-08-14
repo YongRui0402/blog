@@ -178,6 +178,27 @@ a:hover { text-decoration-thickness: 2px; }
   margin: 1.25rem 0;
 }
 
+/* 文首的 TL;DR 與文末的一句話帶走。兩者都由 front matter 的正典欄位驅動 */
+.tldr, .takeaway {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  background: var(--bg-soft);
+  padding: .85rem 1.1rem;
+  margin: 0 0 2rem;
+}
+.takeaway { margin: 2.5rem 0 0; }
+.tldr-t, .takeaway-t {
+  margin: 0 0 .4rem;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  font-weight: 600;
+  color: var(--accent);
+}
+.tldr ul { margin: 0; padding-left: 1.1rem; font-size: .93rem; }
+.tldr li { margin: .3rem 0; }
+.takeaway p:last-child { margin: 0; font-size: .95rem; }
+
 .toc {
   border: 1px solid var(--line);
   border-radius: 6px;

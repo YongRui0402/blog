@@ -9,6 +9,13 @@ tags:
   - CI
 toc: true
 draft: false
+hook: "同一份設定，前一次 pipeline 全綠，下一次 deploy 炸掉。而綠的那次才是意外。"
+takeaway: "間歇性失敗的 CI，先問「這兩個 job 跑在同一台機器上嗎」。"
+key_points:
+  - "兩個 runner 都帶 `docker` 標籤時，GitLab 會各自派工，build 和 deploy 可能落在不同台"
+  - "`docker build` 的映像只存在建置它那台的本機 daemon，跨 runner 不共享"
+  - "錯誤訊息是 `pull access denied`，會把人帶去查 registry 認證 —— 但根本沒有人要 pull"
+  - "標籤要挑「能唯一指到一台」的組合，`docker` 這種能力標籤不能單獨用來選機器"
 ---
 
 同一份 `.gitlab-ci.yml`,只改了幾行文字。前一次 pipeline 全綠,下一次 deploy 炸掉。

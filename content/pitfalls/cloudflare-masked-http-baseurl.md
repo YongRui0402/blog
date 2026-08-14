@@ -10,6 +10,13 @@ tags:
   - GitHub Pages
 toc: true
 draft: false
+hook: "瀏覽器裡怎麼看都是 https，搜尋引擎拿到的卻是 http。"
+takeaway: "驗證要驗產出的檔案，不要驗瀏覽器看到的畫面 —— 中間隔了 CDN 的時候，那是兩個不同的東西。"
+key_points:
+  - "GitHub Actions 的 `configure-pages` 在憑證還在發放時會回 `http://` 的 base_url，整站就用 http 建出去"
+  - "Cloudflare 的 Automatic HTTPS Rewrites 只改 HTML，`sitemap.xml` 與 `robots.txt` 不是 HTML，原樣送出"
+  - "CDN 會修好你的錯誤，然後你就不知道自己錯了"
+  - "驗證 CDN 後面的東西要繞快取（加唯一查詢參數），否則會拿到舊回應而誤判"
 ---
 
 新站上線,開瀏覽器看:網址列是 https、綠鎖、`canonical` 也是 https。
