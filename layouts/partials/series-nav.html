@@ -1,0 +1,55 @@
+{{- /*
+  系列導覽。
+
+  部落格的每一篇都必須能獨立看懂 —— 讀者多半是從搜尋引擎直接落到中間某一篇，
+  不會從第一篇開始讀。所以系列不是「連載」，是「同一個主題的幾個切面」。
+
+  這個區塊要回答讀者的三個問題：
+    1. 我在讀的是什麼系列的一部分？
+    2. 這是第幾篇、總共幾篇？（決定要不要現在花時間讀完）
+    3. 我該先讀哪一篇？
+
+  用法：front matter 加
+      series: 內網服務遷移
+      series_order: 2        # 選配，沒寫就按日期排
+
+  只有一篇的系列不顯示 —— 那不是系列。
+*/ -}}
+
+{{- with .Params.series }}
+  {{- $name := . }}
+  {{- $all := where (where site.RegularPages "Params.series" $name) "Draft" false }}
+  {{- if gt (len $all) 1 }}
+    {{- /* 有 series_order 就照它排，否則按日期 */}}
+    {{- $ordered := $all }}
+    {{- if (index $all 0).Params.series_order }}
+      {{- $ordered = sort $all "Params.series_order" }}
+    {{- else }}
+      {{- $ordered = sort $all "Date" }}
+    {{- end }}
+
+    {{- $pos := 0 }}
+    {{- range $i, $p := $ordered }}
+      {{- if eq $p.RelPermalink $.RelPermalink }}{{ $pos = add $i 1 }}{{ end }}
+    {{- end }}
+
+<nav class="series" aria-label="系列導覽">
+  <p class="series-t">
+    系列:{{ $name }}
+    <span class="muted">第 {{ $pos }} 篇,共 {{ len $ordered }} 篇</span>
+  </p>
+  <ol>
+    {{- range $i, $p := $ordered }}
+    <li{{ if eq $p.RelPermalink $.RelPermalink }} class="here" aria-current="true"{{ end }}>
+      {{- if eq $p.RelPermalink $.RelPermalink }}
+      <span>{{ $p.Title }}</span>
+      {{- else }}
+      <a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+      {{- end }}
+    </li>
+    {{- end }}
+  </ol>
+  <p class="series-note muted">每一篇都可以單獨讀,不必照順序。</p>
+</nav>
+  {{- end }}
+{{- end }}

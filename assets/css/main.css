@@ -416,3 +416,36 @@ mark {
   font-size: .84rem;
   cursor: default;
 }
+
+/* ---------- 喘息照 ---------- */
+
+/* 讓照片比文字欄稍寬一點，視覺上有「換一口氣」的感覺 */
+.breather {
+  margin: 2.5rem calc(-1 * min(3rem, 4vw));
+}
+.breather img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+@media (max-width: 34rem) {
+  .breather { margin: 2rem 0; }
+}
+
+/* ---------- 系列導覽 ---------- */
+
+.series {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: .85rem 1.1rem;
+  margin: 0 0 2rem;
+  font-size: .9rem;
+}
+.series-t { margin: 0 0 .5rem; font-weight: 600; }
+.series-t .muted { font-weight: 400; font-size: .85em; margin-left: .5rem; }
+.series ol { margin: 0; padding-left: 1.3rem; }
+.series li { margin: .2rem 0; }
+.series li.here { font-weight: 600; color: var(--accent); list-style-type: disc; }
+.series-note { margin: .6rem 0 0; font-size: .82rem; }
