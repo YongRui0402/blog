@@ -1,0 +1,50 @@
+{{ define "main" }}
+<header class="list-head">
+  <h1>找不到這個頁面</h1>
+</header>
+
+<div class="content">
+  <p>網址可能打錯了，或者這篇文章被改過網址。</p>
+</div>
+
+{{- /* 直接把搜尋放在 404 上，而不是叫使用者「回首頁再找」——
+       他們手上有的資訊就是那個壞掉的網址，那正好可以當關鍵字。 */}}
+<form class="search-form" role="search" onsubmit="return false;">
+  <label class="sr-only" for="q">搜尋文章</label>
+  <input type="search" id="q" name="q" autocomplete="off" placeholder="用關鍵字找找看…">
+</form>
+
+<p id="search-status" class="muted" aria-live="polite"></p>
+<ul id="results" class="entries"></ul>
+
+<div class="content">
+  <p>或直接瀏覽:
+    <a href="{{ "/pitfalls/" | relURL }}">踩坑</a> ·
+    <a href="{{ "/decisions/" | relURL }}">架構決策</a> ·
+    <a href="{{ "/projects/" | relURL }}">專案</a> ·
+    <a href="{{ "/notes/" | relURL }}">速查</a>
+  </p>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+{{- $js := resources.Get "js/search.js" | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+<script>
+  // 把壞掉的網址最後一段當成搜尋關鍵字自動帶入，例如
+  // /notes/git-rebse/ → 「git rebse」。使用者常常是連結打錯或記錯 slug。
+  //
+  // 必須等 DOMContentLoaded：search.js 帶 defer，會晚於這段行內 script 執行。
+  // 直接 dispatch 的話監聽器還沒註冊，事件就掉了。
+  document.addEventListener('DOMContentLoaded', function () {
+    var seg = location.pathname.replace(/\/+$/, '').split('/').pop();
+    if (!seg || /\.(html?|php|aspx?)$/i.test(seg)) return;
+    var guess = decodeURIComponent(seg).replace(/[-_]+/g, ' ').trim();
+    var box = document.getElementById('q');
+    if (box && guess && guess.length < 60) {
+      box.value = guess;
+      box.dispatchEvent(new Event('input'));
+    }
+  });
+</script>
+{{ end }}

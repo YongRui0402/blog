@@ -293,6 +293,96 @@ a:hover { text-decoration-thickness: 2px; }
   font-weight: 600;
 }
 
+/* ---------- 圖片 ---------- */
+
+.fig { margin: 1.5rem 0; }
+.fig img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-soft);
+}
+.fig figcaption {
+  margin-top: .5rem;
+  font-size: .85rem;
+  color: var(--fg-muted);
+  line-height: 1.6;
+}
+.fig figcaption p { margin: 0; }
+
+/* ---------- 搜尋 ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.search-form { margin: 0 0 1rem; }
+
+#q {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  padding: .6rem .8rem;
+  color: var(--fg);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+#q:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+#q::placeholder { color: var(--fg-muted); }
+
+#search-status { font-size: .85rem; margin: 0 0 .5rem; }
+
+mark {
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0 .1em;
+  border-radius: 2px;
+}
+
+/* ---------- 程式碼複製按鈕 ---------- */
+
+.code-wrap { position: relative; }
+
+.copy-btn {
+  position: absolute;
+  top: .4rem;
+  right: .4rem;
+  font: inherit;
+  font-size: .75rem;
+  line-height: 1;
+  padding: .3rem .55rem;
+  color: var(--fg-muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  /* 平常不擋視線，滑到區塊上或用鍵盤 focus 才浮現 */
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.code-wrap:hover .copy-btn,
+.copy-btn:focus-visible { opacity: 1; }
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.copy-btn.ok { color: var(--accent); border-color: var(--accent); opacity: 1; }
+
+/* 觸控裝置沒有 hover，一律顯示 */
+@media (hover: none) {
+  .copy-btn { opacity: .7; }
+}
+
 /* 技能標籤（關於頁） */
 .btn-inline { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0 1.25rem; }
 .btn-outline {

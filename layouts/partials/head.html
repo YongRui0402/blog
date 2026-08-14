@@ -20,7 +20,19 @@
   <meta property="og:description" content="{{ $desc | plainify | truncate 160 }}">
   <meta property="og:url" content="{{ .Permalink }}">
   <meta property="og:site_name" content="{{ .Site.Title }}">
-  <meta name="twitter:card" content="summary">
+
+  {{- /* 每篇可用 front matter 的 image 覆寫，否則用預設卡片。
+         og:image 必須是絕對網址 —— 相對路徑各家社群平台一律不吃。 */}}
+  {{- $og := "og-default.png" }}
+  {{- with .Params.image }}{{ $og = . }}{{ end }}
+  <meta property="og:image" content="{{ $og | absURL }}">
+  <meta property="og:image:alt" content="{{ .Title }} · {{ .Site.Title }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ $og | absURL }}">
+
+  {{- with .Date }}
+  <meta property="article:published_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+  {{- end }}
 
   {{- $css := resources.Get "css/main.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

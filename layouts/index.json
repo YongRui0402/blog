@@ -1,0 +1,31 @@
+{{- /*
+  搜尋索引。用 jsonify 產生，不手動拼字串 —— 標題或內文裡的引號、
+  換行、反斜線都會被正確跳脫，不會產生壞掉的 JSON。
+
+  內文用 .RawContent（原始 markdown）而不是 .Plain：
+  .Plain 剝掉標籤但保留 HTML entity，程式碼裡的 " 會變成 &#34;，
+  搜尋含引號的字串就永遠找不到，摘要也會顯示亂碼。
+
+  截斷用 substr 而不是 truncate：**Hugo 的 truncate 是 HTML-aware 的**，
+  會把輸入當 HTML 轉義，" 一樣會變成 &#34;。substr 是純字串切割。
+  （2026-08 實測：A 原始有真引號、B 經過 truncate 就變 entity。）
+
+  欄位縮寫是為了縮小檔案（每一筆都會重複這些 key）：
+    t 標題 / u 網址 / s 分類 / g 標籤 / d 描述 / b 內文 / dt 日期 / dr 草稿
+*/ -}}
+{{- $sections := slice "pitfalls" "decisions" "projects" "notes" -}}
+{{- $pages := where .Site.RegularPages "Section" "in" $sections -}}
+{{- $index := slice -}}
+{{- range $pages.ByDate.Reverse -}}
+  {{- $index = $index | append (dict
+      "t"  .Title
+      "u"  .RelPermalink
+      "s"  .Section
+      "g"  (or .Params.tags slice)
+      "d"  (or .Description "")
+      "dt" (.Date.Format "2006-01-02")
+      "dr" .Draft
+      "b"  (substr .RawContent 0 24000)
+  ) -}}
+{{- end -}}
+{{- $index | jsonify -}}

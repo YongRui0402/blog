@@ -62,7 +62,9 @@ summaryLength = 60
     endLevel = 3
 
 [outputs]
-  home = ["HTML", "RSS"]
+  # JSON 是搜尋索引 /index.json。索引內容由 --buildDrafts 決定，
+  # 所以 staging 的索引含草稿、公開站的不含，不需要額外處理。
+  home = ["HTML", "RSS", "JSON"]
   section = ["HTML"]
 
 [menu]
@@ -82,6 +84,10 @@ summaryLength = 60
     name = "速查"
     url = "/notes/"
     weight = 40
+  [[menu.main]]
+    name = "搜尋"
+    url = "/search/"
+    weight = 45
   [[menu.main]]
     name = "關於"
     url = "/about/"

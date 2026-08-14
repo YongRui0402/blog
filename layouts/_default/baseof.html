@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Locale }}">
+<html lang="{{ .Site.Language.Locale }}" data-baseurl="{{ "/" | relURL }}">
 {{ partial "head.html" . }}
 <body>
   <a class="skip" href="#main">跳到主要內容</a>
@@ -8,5 +8,13 @@
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
+
+  {{- /* 程式碼複製按鈕:只在頁面真的有程式碼區塊時才載入 */}}
+  {{- if findRE "<pre" .Content 1 }}
+  {{- $copy := resources.Get "js/copy-code.js" | minify | fingerprint }}
+  <script src="{{ $copy.RelPermalink }}" integrity="{{ $copy.Data.Integrity }}" defer></script>
+  {{- end }}
+
+  {{ block "scripts" . }}{{ end }}
 </body>
 </html>
