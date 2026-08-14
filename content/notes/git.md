@@ -9,6 +9,8 @@ tags:
 - GitHub
 toc: true
 lastmod: '2026-03-29'
+# 明確宣告。Hugo 缺這個欄位時視同已發布，會跳過 staging 檢視。
+draft: false
 ---
 
 ## 一、安裝與初始設定

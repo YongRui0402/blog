@@ -9,6 +9,8 @@ tags:
 - 指令
 - 終端機
 toc: true
+# 明確宣告。Hugo 缺這個欄位時視同已發布，會跳過 staging 檢視。
+draft: false
 ---
 
 ## 檔案與目錄操作

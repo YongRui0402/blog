@@ -51,11 +51,25 @@ jobs:
         env:
           HUGO_ENVIRONMENT: production
           TZ: Asia/Taipei
+        # 刻意不覆蓋 baseURL，直接用 hugo.toml 裡的值。
+        #
+        # 原本寫 --baseURL "${{ steps.pages.outputs.base_url }}/"，
+        # 但自訂網域的憑證還在發放時，configure-pages 會回 http:// 而不是
+        # https://，整站就用 http 建出去。HTML 那部分被 Cloudflare 的
+        # Automatic HTTPS Rewrites 蓋掉了看不出來，但 sitemap.xml 與
+        # robots.txt 不是 HTML，會直接把 http:// 的網址送給搜尋引擎。
+        run: hugo --minify --cleanDestinationDir
+
+      - name: 確認產出的絕對網址是 https
         run: |
-          hugo \
-            --minify \
-            --cleanDestinationDir \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+          # 這個 bug 會被 Cloudflare 遮住，所以要在 CI 直接驗產出，
+          # 不能靠開瀏覽器看。
+          if grep -q "http://blog\." public/sitemap.xml public/robots.txt 2>/dev/null; then
+            echo "::error::產出含 http:// 絕對網址，檢查 hugo.toml 的 baseURL"
+            grep -n "http://blog\." public/sitemap.xml public/robots.txt || true
+            exit 1
+          fi
+          echo "sitemap 與 robots 皆為 https"
 
       - name: 檢查產出沒有草稿殘留
         run: |

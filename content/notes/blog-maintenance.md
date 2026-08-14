@@ -8,6 +8,8 @@ tags:
   - CI
   - 自架服務
 toc: true
+# 明確宣告。Hugo 缺這個欄位時視同已發布，會跳過 staging 檢視。
+draft: false
 ---
 
 給三個月後的自己。這個站的內容來自我的 Obsidian 筆記庫,而筆記庫裡有內網 IP、

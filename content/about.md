@@ -4,6 +4,8 @@ description: 這個站在寫什麼、怎麼寫
 date: 2026-08-14
 slug: about
 url: /about/
+# 明確宣告。Hugo 缺這個欄位時視同已發布，會跳過 staging 檢視。
+draft: false
 ---
 
 這裡是 **BDGG** 的工作筆記。
