@@ -1,0 +1,83 @@
+# 公開站建置與部署。
+#
+# 這個 repo 的內容是由內網 staging repo 同步過來的，已通過兩道消毒掃描。
+# 不要直接在這裡寫文章 —— 下次同步會被覆蓋掉。
+#
+# 前置設定（只需做一次）：
+#   Settings → Pages → Build and deployment → Source 改成「GitHub Actions」
+#   Settings → Pages → Custom domain 填 blog.xn--ht0a.tw
+
+name: 建置並部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時只跑一個部署；排隊中的舊的直接取消
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # 版本寫死。Hugo 偶有破壞性變更，不要讓網站某天自己壞掉。
+      HUGO_VERSION: 0.165.0
+    steps:
+      - name: 安裝 Hugo
+        run: |
+          set -eux
+          f="hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          curl -fsSL -O "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${f}"
+          sudo dpkg -i "$f"
+          hugo version
+
+      - uses: actions/checkout@v4
+        with:
+          # .GitInfo 與 lastmod 需要完整歷史
+          fetch-depth: 0
+
+      - uses: actions/configure-pages@v5
+        id: pages
+
+      - name: 建置
+        env:
+          HUGO_ENVIRONMENT: production
+          TZ: Asia/Taipei
+        run: |
+          hugo \
+            --minify \
+            --cleanDestinationDir \
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: 檢查產出沒有草稿殘留
+        run: |
+          # 保險絲：正式建置本來就不會產出 draft，但萬一 --buildDrafts
+          # 不小心被加進去，這裡會當場擋下而不是默默上線。
+          if grep -rl 'class="draft-tag"' public/ 2>/dev/null | grep -q .; then
+            echo "::error::產出裡有草稿標記，中止部署"
+            grep -rl 'class="draft-tag"' public/ || true
+            exit 1
+          fi
+          echo "無草稿殘留"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

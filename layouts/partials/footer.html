@@ -1,0 +1,15 @@
+<footer class="site-foot">
+  <div class="wrap">
+    <p>
+      {{ .Site.Title }} ·
+      <a href="https://github.com/{{ .Site.Params.github }}" rel="me noopener">GitHub</a> ·
+      <a href="{{ "index.xml" | relURL }}">RSS</a>
+    </p>
+    <p class="muted">
+      內容以實測為準，環境不同結果可能不同。引用請註明出處。
+    </p>
+    {{- if not hugo.IsProduction }}
+    <p class="staging-mark">⚠ 這是內網 staging 版本，含未發布草稿，請勿外流</p>
+    {{- end }}
+  </div>
+</footer>

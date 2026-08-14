@@ -1,0 +1,84 @@
+baseURL = "https://blog.xn--ht0a.tw/"
+# v0.158 起 languageCode 改名為 locale
+locale = "zh-Hant-TW"
+defaultContentLanguage = "zh-tw"
+title = "BDGG"
+enableRobotsTXT = true
+enableGitInfo = false
+
+# 摘要長度（中文字元，列表頁用）
+summaryLength = 60
+
+# 內網 staging 建置時用 --baseURL 與 --buildDrafts 覆蓋；實際指令見 Makefile
+# 的 `staging` target。（這個檔會同步到公開 repo，所以不在這裡寫內網主機名。）
+# 公開建置不加 --buildDrafts，draft: true 的文章不會被產出。
+
+[params]
+  description = "韌體、嵌入式與自架服務的工作筆記"
+  author = "BDGG"
+  # 對外一律 BDGG。不放真名 / 居住地 / 私人信箱。
+  github = "YongRui0402"
+  # 文章頂端「本文寫於 X，現況可能已變」的提示，超過這個月數才顯示
+  staleAfterMonths = 12
+
+[pagination]
+  pagerSize = 10
+
+# 分類即 section，網址就是 /pitfalls/xxx/。
+# GA4 才有辦法依類型分開看流量 —— 這是分類進 permalink 的唯一理由。
+[permalinks]
+  [permalinks.page]
+    pitfalls  = "/pitfalls/:slug/"
+    decisions = "/decisions/:slug/"
+    projects  = "/projects/:slug/"
+    notes     = "/notes/:slug/"
+
+[taxonomies]
+  tag = "tags"
+
+[services]
+  [services.googleAnalytics]
+    ID = "G-1XSYTQRNTB"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      # 允許 markdown 內嵌 HTML（About 頁的技能標籤要用）
+      unsafe = true
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
+  [markup.highlight]
+    # noClasses = false → 產出 class 而非 inline style，才能跟著深色模式切換
+    noClasses = false
+    lineNos = false
+    tabWidth = 4
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML"]
+
+[menu]
+  [[menu.main]]
+    name = "踩坑"
+    url = "/pitfalls/"
+    weight = 10
+  [[menu.main]]
+    name = "架構決策"
+    url = "/decisions/"
+    weight = 20
+  [[menu.main]]
+    name = "專案"
+    url = "/projects/"
+    weight = 30
+  [[menu.main]]
+    name = "速查"
+    url = "/notes/"
+    weight = 40
+  [[menu.main]]
+    name = "關於"
+    url = "/about/"
+    weight = 50

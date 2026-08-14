@@ -1,0 +1,63 @@
+{{ define "main" }}
+{{- /* section 的中文名取自主選單，避免在模板裡再維護一份對照表 */}}
+{{- $sectName := "" }}
+{{- $sectURL := printf "/%s/" .Section }}
+{{- range .Site.Menus.main }}
+  {{- if eq .URL $sectURL }}{{ $sectName = .Name }}{{ end }}
+{{- end }}
+
+<article class="post">
+  <header class="post-head">
+    {{- with $sectName }}
+    <a class="sect" href="{{ $sectURL | relURL }}">{{ . }}</a>
+    {{- end }}
+
+    <h1>{{ .Title }}</h1>
+
+    <p class="meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+      {{- if gt (.Lastmod.Sub .Date).Hours 24.0 }}
+      · 更新於 {{ .Lastmod.Format "2006-01-02" }}
+      {{- end }}
+      · {{ .ReadingTime }} 分鐘
+      {{- if .Draft }} · <strong class="draft-tag">草稿</strong>{{ end }}
+    </p>
+
+    {{- /* 技術文章最怕讀者不知道內容已經過期。超過設定月數就自動掛提示，
+           不必每篇手動維護。 */}}
+    {{- $stale := default 12 .Site.Params.staleAfterMonths }}
+    {{- $ref := cond (gt (.Lastmod.Sub .Date).Hours 24.0) .Lastmod .Date }}
+    {{- $months := div (now.Sub $ref).Hours 730.0 }}
+    {{- if gt $months $stale }}
+    <p class="stale">
+      本文寫於 {{ $ref.Format "2006-01" }}，距今約 {{ math.Floor $months }} 個月。
+      技術環境變動快，套用前請自行驗證。
+    </p>
+    {{- end }}
+  </header>
+
+  {{- if .Params.toc }}
+  <nav class="toc" aria-label="目錄">
+    <p class="toc-t">目錄</p>
+    {{ .TableOfContents }}
+  </nav>
+  {{- end }}
+
+  <div class="content">
+    {{ .Content }}
+  </div>
+
+  {{- with .Params.tags }}
+  <p class="tags">
+    {{- range . }}
+    <a href="{{ (printf "/tags/%s/" (. | urlize)) | relURL }}">#{{ . }}</a>
+    {{- end }}
+  </p>
+  {{- end }}
+
+  <nav class="pager">
+    {{- with .PrevInSection }}<a class="prev" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}
+    {{- with .NextInSection }}<a class="next" href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}
+  </nav>
+</article>
+{{ end }}

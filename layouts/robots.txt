@@ -1,0 +1,11 @@
+{{- if hugo.IsProduction -}}
+User-agent: *
+Allow: /
+
+Sitemap: {{ "sitemap.xml" | absURL }}
+{{- else -}}
+{{- /* 內網 staging 一律拒絕所有爬蟲。這個站含未核可草稿，
+       就算它只在內網也不該被索引 —— 深度防禦，成本三行。 */ -}}
+User-agent: *
+Disallow: /
+{{- end }}

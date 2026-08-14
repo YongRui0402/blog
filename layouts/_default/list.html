@@ -1,0 +1,26 @@
+{{ define "main" }}
+<header class="list-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Content }}<div class="content intro">{{ . }}</div>{{ end }}
+</header>
+
+{{- $pages := .Paginator.Pages }}
+{{- if $pages }}
+<ul class="entries">
+  {{- range $pages }}
+  <li>
+    <a class="entry" href="{{ .RelPermalink }}">
+      <span class="entry-date"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time></span>
+      <span class="entry-title">{{ .Title }}{{ if .Draft }} <em class="draft-tag">草稿</em>{{ end }}</span>
+    </a>
+    {{- with or .Description .Summary }}
+    <p class="entry-desc">{{ . | plainify | truncate 90 }}</p>
+    {{- end }}
+  </li>
+  {{- end }}
+</ul>
+{{ partial "paginator.html" . }}
+{{- else }}
+<p class="muted">這個分類還沒有文章。</p>
+{{- end }}
+{{ end }}
