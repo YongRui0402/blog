@@ -10,6 +10,8 @@ tags:
 toc: true
 # 明確宣告。Hugo 缺這個欄位時視同已發布，會跳過 staging 檢視。
 draft: false
+# 白名單:能否離開內網(與 draft 分層,缺欄位視同不發布)
+publish: true
 hook: "腳本說「已更新，驗證通過」。但密碼是壞的。"
 takeaway: "任何含 `$` 的秘密（bcrypt、部分 JWT、某些 API key），在 shell 裡一律用單引號、引號 heredoc 或 stdin。而且驗收要用真的登入一次，不要相信腳本自己說的「已更新」。"
 key_points:

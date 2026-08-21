@@ -10,6 +10,8 @@ tags:
   - Let's Encrypt
 toc: true
 draft: false
+# 白名單:能否離開內網(與 draft 分層,缺欄位視同不發布)
+publish: true
 hook: "自簽 CA 的成本不在建置的時候，在之後每一台裝置上。"
 takeaway: "評估內網方案時要問「成本發生在哪裡」—— 發生在建置時的一次性成本很便宜，發生在每台裝置上的成本會一直收。"
 key_points:

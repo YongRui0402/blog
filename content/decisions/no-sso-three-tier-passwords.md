@@ -9,6 +9,8 @@ tags:
   - 密碼
 toc: true
 draft: false
+# 白名單:能否離開內網(與 draft 分層,缺欄位視同不發布)
+publish: true
 hook: "以為問題是「登入太多次」，其實是「記不住哪個服務用哪組密碼」。"
 takeaway: "家用規模下不上 SSO，不是因為 SSO 不好，是因為它把「偶爾的麻煩」換成「持續的維運責任 + 一個新的單點故障」。"
 key_points:
