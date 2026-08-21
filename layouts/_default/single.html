@@ -1,15 +1,12 @@
 {{ define "main" }}
-{{- /* section 的中文名取自主選單，避免在模板裡再維護一份對照表 */}}
-{{- $sectName := "" }}
+{{- /* section 的中文名取自 section 首頁的 title，不另外維護對照表 */}}
 {{- $sectURL := printf "/%s/" .Section }}
-{{- range .Site.Menus.main }}
-  {{- if eq .URL $sectURL }}{{ $sectName = .Name }}{{ end }}
-{{- end }}
 
 <article class="post">
+  {{- partial "cover.html" (dict "ctx" . "size" "hero") }}
   <header class="post-head">
-    {{- with $sectName }}
-    <a class="sect" href="{{ $sectURL | relURL }}">{{ . }}</a>
+    {{- with partial "sect-name.html" . }}
+    <a class="sect" href="{{ $sectURL | relURL }}">{{ partial "sect-icon.html" $.Section }}{{ . }}</a>
     {{- end }}
 
     <h1>{{ .Title }}</h1>
@@ -97,6 +94,20 @@
     {{- end }}
   </p>
   {{- end }}
+
+  {{- /* 相關文章。判準在 hugo.toml 的 [related]：主要看共同標籤。
+         一篇都算不出來時整段不顯示 —— 硬湊出來的「相關」比沒有更糟。 */}}
+  {{- $related := first 3 (.Site.RegularPages.Related .) }}
+  {{- with $related }}
+  <section class="related">
+    <h2>相關文章</h2>
+    <ul class="entries">
+      {{- range . }}{{ partial "entry.html" . }}{{ end }}
+    </ul>
+  </section>
+  {{- end }}
+
+  {{- partial "comments.html" . }}
 
   <nav class="pager">
     {{- with .PrevInSection }}<a class="prev" href="{{ .RelPermalink }}">← {{ .Title }}</a>{{ end }}

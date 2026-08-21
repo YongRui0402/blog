@@ -1,0 +1,28 @@
+{{ define "main" }}
+{{- /* 全部文章依日期排。刻意**不分頁** —— 分頁一來，排序按鈕就只能排
+       當前那一頁，會給出「看起來對、其實是錯」的順序。
+       站台規模還小，一頁列完是最誠實的做法；哪天多到讀不動再回頭處理。 */}}
+{{- $sections := slice "pitfalls" "decisions" "projects" "notes" "learning" "life" }}
+{{- $posts := where .Site.RegularPages "Section" "in" $sections }}
+{{- $posts = $posts.ByDate.Reverse }}
+
+<header class="list-head">
+  <h1>{{ .Title }}</h1>
+  {{- with .Content }}<div class="content intro">{{ . }}</div>{{ end }}
+  <p class="muted">全部 {{ len $posts }} 篇，不分頁。</p>
+</header>
+
+{{- if $posts }}
+{{ partial "sort-bar.html" . }}
+<ul class="entries">
+  {{- range $posts }}{{ partial "entry.html" . }}{{ end }}
+</ul>
+{{- else }}
+<p class="muted">還沒有文章。</p>
+{{- end }}
+{{ end }}
+
+{{ define "scripts" }}
+{{- $js := resources.Get "js/sort.js" | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{ end }}

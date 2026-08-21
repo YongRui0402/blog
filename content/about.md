@@ -23,6 +23,8 @@ publish: true
 - **[架構決策](/decisions/)** —— 為什麼選 A 不選 B，連同被否決的方案。
 - **[專案](/projects/)** —— 做出來的東西，含接線、照片與實測數字。
 - **[速查](/notes/)** —— 自己會重複查的指令與設定。
+- **[學習筆記](/learning/)** —— 正在學、還沒學完的東西，包含當初哪裡沒想通。
+- **[生活紀錄](/life/)** —— 不是技術的那一半。
 
 ## 寫作原則
 
@@ -43,13 +45,6 @@ publish: true
 <div class="btn-inline">
 <button class="btn-outline" type="button">C</button>
 <button class="btn-outline" type="button">C++</button>
-<button class="btn-outline" type="button">ARM Cortex-M</button>
-<button class="btn-outline" type="button">nRF52</button>
-<button class="btn-outline" type="button">ESP32</button>
-<button class="btn-outline" type="button">BLE / GATT</button>
-<button class="btn-outline" type="button">I2C / SPI / UART</button>
-<button class="btn-outline" type="button">USB Gadget</button>
-<button class="btn-outline" type="button">IMU 感測器</button>
 </div>
 
 ### Linux 與系統
@@ -68,8 +63,6 @@ publish: true
 <button class="btn-outline" type="button">GitLab CI</button>
 <button class="btn-outline" type="button">Nginx Proxy Manager</button>
 <button class="btn-outline" type="button">Raspberry Pi</button>
-<button class="btn-outline" type="button">MQTT</button>
-<button class="btn-outline" type="button">Prometheus</button>
 </div>
 
 ## 聯繫

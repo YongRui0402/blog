@@ -6,25 +6,15 @@
   {{- end }}
 </section>
 
-{{- /* 首頁只列文章型的三個 section。速查（notes）是工具不是文章，走選單進去。 */}}
-{{- $posts := where .Site.RegularPages "Section" "in" (slice "pitfalls" "decisions" "projects") }}
+{{- /* 首頁列出所有內容型 section。速查（notes）是工具不是文章，走選單進去。 */}}
+{{- $posts := where .Site.RegularPages "Section" "in" (slice "pitfalls" "decisions" "projects" "learning" "life") }}
 {{- $recent := first 10 $posts }}
 
 {{- if $recent }}
 <section class="recent">
   <h2>最新</h2>
   <ul class="entries">
-    {{- range $recent }}
-    <li>
-      <a class="entry" href="{{ .RelPermalink }}">
-        <span class="entry-date"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time></span>
-        <span class="entry-title">{{ .Title }}{{ if .Draft }} <em class="draft-tag">草稿</em>{{ end }}</span>
-      </a>
-      {{- with or .Description .Summary }}
-      <p class="entry-desc">{{ . | plainify | truncate 90 }}</p>
-      {{- end }}
-    </li>
-    {{- end }}
+    {{- range $recent }}{{ partial "entry.html" . }}{{ end }}
   </ul>
 </section>
 {{- else }}
@@ -36,10 +26,10 @@
   <div class="cards">
     {{- range .Site.Menus.main }}
     {{- $slug := strings.Trim .URL "/" }}
-    {{- if in (slice "pitfalls" "decisions" "projects" "notes") $slug }}
+    {{- if in (slice "pitfalls" "decisions" "projects" "notes" "learning" "life") $slug }}
     {{- $sect := $.Site.GetPage (printf "/%s" $slug) }}
     <a class="card" href="{{ .URL | relURL }}">
-      <strong>{{ .Name }}</strong>
+      <strong>{{ partial "sect-icon.html" $slug }}{{ .Name }}</strong>
       {{- with $sect }}
       <span class="muted">{{ len .RegularPages }} 篇</span>
       {{- with .Params.blurb }}<span class="card-blurb">{{ . }}</span>{{ end }}

@@ -93,6 +93,111 @@ a:hover { text-decoration-thickness: 2px; }
 .nav a:hover, .nav a.active { color: var(--accent); }
 .nav a.active { font-weight: 600; }
 
+/* ---------- 分類圖示 ---------- */
+
+/* stroke 用 currentColor，所以顏色跟著上下文走，深色模式不必另外處理。 */
+.sect-icon {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  vertical-align: -.12em;
+  margin-right: .35em;
+}
+h1 .sect-icon { width: .82em; height: .82em; color: var(--fg-muted); }
+.card strong .sect-icon { color: var(--accent); }
+
+/* ---------- 封面 ---------- */
+
+.cover { display: block; object-fit: cover; background: var(--bg-soft); }
+/* 固定長寬比，永遠不變 —— 配上 object-fit: cover，圖片只會被裁切、不會變形，
+   而且每一列裁到的範圍一致。
+   讓「圖片凸出去」這件事不發生的關鍵不在圖片，在下面的 line-clamp：
+   標題與摘要都限行數 → 每一列一樣高 → 圖片自然不會比文字長。 */
+.cover-thumb {
+  width: 12rem;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+.cover-hero {
+  width: 100%;
+  height: auto;
+  max-height: 16rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- 留言 ---------- */
+
+.comments { margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.comments h2 {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--fg-muted);
+  font-weight: 600;
+  margin: 0 0 .4rem;
+}
+.comments-note { font-size: .82rem; margin: 0 0 1rem; }
+
+/* ---------- 相關文章 ---------- */
+
+.related { margin: 2.5rem 0 1rem; }
+.related h2 {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--fg-muted);
+  font-weight: 600;
+  margin: 0 0 .5rem;
+}
+.related .entries li:last-child { border-bottom: none; }
+
+/* ---------- 標籤總覽 ---------- */
+
+.tagcloud { margin: 1rem 0 2rem; }
+.tagcloud .chip { text-decoration: none; }
+.searchhint { font-size: .82rem; margin: -.6rem 0 1rem; }
+
+/* ---------- 分類快選（搜尋頁） ---------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: .8rem 0 1.2rem;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .3rem .7rem;
+  font: inherit;
+  font-size: .82rem;
+  color: var(--fg-muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); color: var(--fg); }
+.chip .sect-icon { margin-right: 0; }
+.chip-n {
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+  opacity: .7;
+}
+/* 選起來的狀態同時給顏色與邊框 —— 只靠顏色的話色弱使用者分不出來 */
+.chip.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
 /* ---------- 文章列表 ---------- */
 
 .entries { list-style: none; margin: 0; padding: 0; }
@@ -100,27 +205,84 @@ a:hover { text-decoration-thickness: 2px; }
 .entry {
   display: flex;
   gap: .9rem;
-  align-items: baseline;
+  align-items: flex-start;
   text-decoration: none;
   color: inherit;
 }
 .entry:hover .entry-title { color: var(--accent); text-decoration: underline; }
-.entry-date {
-  flex: 0 0 5.6rem;
+.entry:hover .cover-thumb { border-color: var(--accent); }
+.entry-body { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.entry-meta {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
   color: var(--fg-muted);
-  font-size: .82rem;
+  font-size: .78rem;
   font-variant-numeric: tabular-nums;
 }
-.entry-title { font-weight: 500; }
+.entry-meta .sect-icon { margin-right: 0; }
+.entry-sect { letter-spacing: .02em; }
+/* 限行數是整個版型的關鍵：行數固定，每一列就一樣高，圖片才不會凸出去。
+   -webkit- 前綴不是舊寫法，它就是這個功能目前的標準寫法，所有瀏覽器都吃。 */
+.entry-title {
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .entry-desc {
-  margin: .2rem 0 0 6.5rem;
   color: var(--fg-muted);
   font-size: .88rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* 標籤縮排到與標題同一條線（縮圖寬 + 間距），不然會跟封面貼在一起 */
+.entry-tags {
+  margin: .35rem 0 0;
+  padding-left: calc(12rem + .9rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem .5rem;
+  font-size: .76rem;
+}
+.entry-tags a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  padding: .05rem .4rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.entry-tags a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- 排序 ---------- */
+
+.sortbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  margin: .8rem 0 1rem;
+}
+.sortbar[hidden] { display: none; }
+.sortbar-t {
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--fg-muted);
+  margin-right: .2rem;
+}
+
+/* 窄螢幕：圖片改成整列寬、文字在下 —— 併排的話兩邊都會太窄 */
 @media (max-width: 34rem) {
-  .entry { flex-direction: column; gap: .1rem; }
-  .entry-desc { margin-left: 0; }
+  .entry { flex-direction: column; gap: .5rem; }
+  .cover-thumb { width: 100%; }
+  .entry-tags { padding-left: 0; }
 }
 
 /* ---------- 首頁 ---------- */

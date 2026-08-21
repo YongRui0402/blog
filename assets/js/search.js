@@ -10,17 +10,26 @@
 (function () {
   'use strict';
 
-  var SECTIONS = {
-    pitfalls:  '踩坑',
-    decisions: '架構決策',
-    projects:  '專案',
-    notes:     '速查'
-  };
-
   var input   = document.getElementById('q');
   var results = document.getElementById('results');
   var status  = document.getElementById('search-status');
+  var chipBox = document.getElementById('sect-chips');
   if (!input || !results) return;
+
+  /* 分類名稱從 chip 的 data 屬性讀，不在這裡寫死一份 ——
+   * 模板已經從 section 首頁產出這些值，抄第二份就會走鐘。 */
+  var SECTIONS = {};
+  var chips = chipBox ? [].slice.call(chipBox.querySelectorAll('.chip')) : [];
+  chips.forEach(function (c) {
+    SECTIONS[c.getAttribute('data-sect')] = c.getAttribute('data-name');
+  });
+
+  /* 被選起來的分類。空 = 不篩選。 */
+  var picked = {};
+
+  function pickedList() {
+    return Object.keys(picked).filter(function (k) { return picked[k]; });
+  }
 
   var index = null;
   var pending = null;
@@ -99,6 +108,17 @@
     ];
   }
 
+  /* 分類圖示直接從 chip 複製一份 —— path 資料只存在模板裡，
+   * JS 不再抄一份 SVG。沒有 chip（例如 404 頁）就不畫圖示。 */
+  function iconFor(sect) {
+    for (var i = 0; i < chips.length; i++) {
+      if (chips[i].getAttribute('data-sect') !== sect) continue;
+      var svg = chips[i].querySelector('svg');
+      return svg ? svg.cloneNode(true) : null;
+    }
+    return null;
+  }
+
   function el(tag, cls, text) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -115,45 +135,79 @@
       var a = el('a', 'entry');
       a.href = item.u;
 
-      var meta = el('span', 'entry-date');
-      meta.textContent = SECTIONS[item.s] || item.s;
-      a.appendChild(meta);
-
-      var title = el('span', 'entry-title', item.t);
-      if (item.dr) {
-        title.appendChild(document.createTextNode(' '));
-        title.appendChild(el('em', 'draft-tag', '草稿'));
+      if (item.c) {
+        var img = el('img', 'cover cover-thumb');
+        img.src = item.c;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = '';
+        a.appendChild(img);
       }
-      a.appendChild(title);
-      li.appendChild(a);
+
+      var body = el('span', 'entry-body');
+
+      var meta = el('span', 'entry-meta');
+      var icon = iconFor(item.s);
+      if (icon) meta.appendChild(icon);
+      meta.appendChild(el('span', 'entry-sect', SECTIONS[item.s] || item.s));
+      meta.appendChild(el('time', null, item.dt || ''));
+      if (item.dr) meta.appendChild(el('em', 'draft-tag', '草稿'));
+      body.appendChild(meta);
+
+      body.appendChild(el('span', 'entry-title', item.t));
 
       var sn = snippet(item.b || '', m.hit, m.matched);
       if (sn) {
-        var p = el('p', 'entry-desc');
+        var p = el('span', 'entry-desc');
         p.appendChild(document.createTextNode(sn[0]));
         p.appendChild(el('mark', null, sn[1]));
         p.appendChild(document.createTextNode(sn[2]));
-        li.appendChild(p);
+        body.appendChild(p);
       } else if (item.d) {
-        li.appendChild(el('p', 'entry-desc', item.d));
+        body.appendChild(el('span', 'entry-desc', item.d));
       }
 
+      a.appendChild(body);
+      li.appendChild(a);
       results.appendChild(li);
     });
   }
 
   function search(q) {
     var terms = q.toLowerCase().split(/\s+/).filter(Boolean);
-    if (!terms.length) {
+    var sects = pickedList();
+
+    if (!terms.length && !sects.length) {
       results.textContent = '';
       status.textContent = '';
       return;
     }
 
     load().then(function (data) {
+      // 先依分類縮小範圍，再算分數。索引本身已依日期新到舊排好。
+      var pool = sects.length
+        ? data.filter(function (i) { return sects.indexOf(i.s) !== -1; })
+        : data;
+
+      var names = sects.map(function (k) { return SECTIONS[k] || k; }).join('、');
+
+      // 只點分類、沒打關鍵字 —— 當成「瀏覽這幾個分類」，直接列出來
+      if (!terms.length) {
+        if (!pool.length) {
+          status.textContent = names + ' 還沒有文章。';
+          results.textContent = '';
+          return;
+        }
+        status.textContent = names + ' 共 ' + pool.length + ' 篇';
+        render(pool.slice(0, 30).map(function (i) {
+          return { item: i, score: 0, hit: -1, matched: '' };
+        }));
+        return;
+      }
+
       function run(requireAll) {
         var out = [];
-        data.forEach(function (item) {
+        pool.forEach(function (item) {
           var r = score(item, terms, requireAll);
           if (r) out.push({ item: item, score: r.score, hit: r.hit, matched: r.matched });
         });
@@ -169,36 +223,67 @@
         partial = matches.length > 0;
       }
 
+      var scope = sects.length ? '（限 ' + names + '）' : '';
       if (!matches.length) {
-        status.textContent = '沒有符合的文章。試試更短的關鍵字，或只打其中一個詞。';
+        status.textContent = sects.length
+          ? names + ' 裡沒有符合的文章。取消分類篩選再試一次，或換個關鍵字。'
+          : '沒有符合的文章。試試更短的關鍵字，或只打其中一個詞。';
       } else if (partial) {
-        status.textContent = '沒有完全符合的文章。以下 ' + matches.length + ' 篇符合部分關鍵字:';
+        status.textContent = '沒有完全符合的文章。以下 ' + matches.length + ' 篇符合部分關鍵字' + scope + '：';
       } else {
-        status.textContent = '找到 ' + matches.length + ' 篇';
+        status.textContent = '找到 ' + matches.length + ' 篇' + scope;
       }
       render(matches.slice(0, 30));
     }).catch(function (e) {
-      status.textContent = '搜尋索引載入失敗:' + e.message;
+      status.textContent = '搜尋索引載入失敗：' + e.message;
     });
+  }
+
+  /* 把目前狀態寫回網址，讓結果可以分享、可以按上一頁 */
+  function syncURL() {
+    var parts = [];
+    if (input.value) parts.push('q=' + encodeURIComponent(input.value));
+    var sects = pickedList();
+    if (sects.length) parts.push('s=' + encodeURIComponent(sects.join(',')));
+    history.replaceState(null, '', parts.length ? '?' + parts.join('&') : location.pathname);
   }
 
   var timer;
   input.addEventListener('input', function () {
     clearTimeout(timer);
-    var q = input.value;
     timer = setTimeout(function () {
-      search(q);
-      // 讓搜尋結果可以被分享 / 上一頁
-      var url = q ? '?q=' + encodeURIComponent(q) : location.pathname;
-      history.replaceState(null, '', url);
+      search(input.value);
+      syncURL();
     }, 120);
   });
 
-  // 支援 /search/?q=xxx —— 404 頁會用這個把網址帶過來
-  var initial = new URLSearchParams(location.search).get('q');
-  if (initial) {
-    input.value = initial;
-    search(initial);
+  // 分類 chip：點一下切換，可以複選。空的就是不篩選。
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      var k = c.getAttribute('data-sect');
+      picked[k] = !picked[k];
+      c.setAttribute('aria-pressed', picked[k] ? 'true' : 'false');
+      c.classList.toggle('on', !!picked[k]);
+      search(input.value);
+      syncURL();
+    });
+  });
+
+  // 支援 /search/?q=xxx&s=pitfalls,notes —— 404 頁會用 q 把網址帶過來
+  var params = new URLSearchParams(location.search);
+  var initialQ = params.get('q');
+  var initialS = params.get('s');
+  if (initialQ) input.value = initialQ;
+  if (initialS) {
+    initialS.split(',').filter(Boolean).forEach(function (k) {
+      picked[k] = true;
+      chips.forEach(function (c) {
+        if (c.getAttribute('data-sect') !== k) return;
+        c.setAttribute('aria-pressed', 'true');
+        c.classList.add('on');
+      });
+    });
   }
+  if (initialQ || initialS) search(input.value);
   input.focus();
 })();

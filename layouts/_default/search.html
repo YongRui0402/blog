@@ -9,6 +9,24 @@
          spellcheck="false" placeholder="關鍵字…（標題、標籤與內文都會搜）">
 </form>
 
+{{- /* 分類快選。清單與名稱都從 section 首頁來，不在這裡或 JS 裡另寫一份 ——
+       search.js 的分類對照表也是讀這些 data 屬性建起來的。 */}}
+<div class="chips" id="sect-chips" role="group" aria-label="依分類篩選">
+  {{- range $slug := slice "pitfalls" "decisions" "projects" "notes" "learning" "life" }}
+  {{- with $.Site.GetPage (printf "/%s" $slug) }}
+  <button class="chip" type="button" data-sect="{{ $slug }}"
+          data-name="{{ .Title }}" aria-pressed="false">
+    {{- partial "sect-icon.html" $slug }}{{ .Title }}
+    <span class="chip-n">{{ len .RegularPages }}</span>
+  </button>
+  {{- end }}
+  {{- end }}
+</div>
+
+<p class="muted searchhint">
+  想從標籤找？看 <a href="{{ "/tags/" | relURL }}">全部標籤</a>。
+</p>
+
 <p id="search-status" class="muted" aria-live="polite"></p>
 <ul id="results" class="entries"></ul>
 
@@ -17,7 +35,9 @@
     <a href="{{ "/pitfalls/" | relURL }}">踩坑</a>、
     <a href="{{ "/decisions/" | relURL }}">架構決策</a>、
     <a href="{{ "/projects/" | relURL }}">專案</a>、
-    <a href="{{ "/notes/" | relURL }}">速查</a>。</p>
+    <a href="{{ "/notes/" | relURL }}">速查</a>、
+    <a href="{{ "/learning/" | relURL }}">學習筆記</a>、
+    <a href="{{ "/life/" | relURL }}">生活紀錄</a>。</p>
 </noscript>
 {{ end }}
 

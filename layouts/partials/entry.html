@@ -1,0 +1,29 @@
+{{- /* 列表中的一篇文章。首頁、分類頁、最新頁共用這一份 ——
+       抄成兩份的話，改版型時一定只會改到其中一邊。
+
+       data-date / data-title 是給排序按鈕用的（assets/js/sort.js）。
+       標籤放在 <a> 外面：巢狀的 <a> 是不合法的 HTML，瀏覽器會把它拆掉。 */ -}}
+<li class="entry-item" data-date="{{ .Date.Format "2006-01-02" }}" data-title="{{ .Title }}">
+  <a class="entry" href="{{ .RelPermalink }}">
+    {{- partial "cover.html" (dict "ctx" . "size" "thumb") }}
+    <span class="entry-body">
+      <span class="entry-meta">
+        {{- partial "sect-icon.html" .Section }}
+        <span class="entry-sect">{{ partial "sect-name.html" . }}</span>
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+        {{- if .Draft }} <em class="draft-tag">草稿</em>{{ end }}
+      </span>
+      <span class="entry-title">{{ .Title }}</span>
+      {{- with or .Description .Summary }}
+      <span class="entry-desc">{{ . | plainify | truncate 90 }}</span>
+      {{- end }}
+    </span>
+  </a>
+  {{- with .Params.tags }}
+  <p class="entry-tags">
+    {{- range . }}
+    <a href="{{ (printf "/tags/%s/" (. | urlize)) | relURL }}">#{{ . }}</a>
+    {{- end }}
+  </p>
+  {{- end }}
+</li>

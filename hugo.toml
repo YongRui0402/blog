@@ -24,6 +24,19 @@ summaryLength = 60
   github = "YongRui0402"
   # 文章頂端「本文寫於 X，現況可能已變」的提示，超過這個月數才顯示
   staleAfterMonths = 12
+  # 留言（giscus，走 GitHub Discussions）。三個值都填了才會載入留言區，
+  # 而且只在正式建置載入 —— 內網 staging 不該產生真實留言。
+  # repoId / categoryId 從 https://giscus.app 產生，是公開識別碼不是機密。
+  # 前置作業：到公開 repo 的 Settings 開啟 Discussions。
+  [params.giscus]
+    repo = "YongRui0402/blog"
+    repoId = "R_kgDOT4FnpA"
+    category = "Announcements"
+    categoryId = "DIC_kwDOT4FnpM4DD44c"
+
+  # 沒在 front matter 指定 cover 時用的預設封面（相對 assets/）。
+  # 找不到這個檔就不顯示封面，不會壞。
+  defaultCover = "photos/cloud-sea-ridgeline.jpg"
 
 [pagination]
   pagerSize = 10
@@ -36,9 +49,25 @@ summaryLength = 60
     decisions = "/decisions/:slug/"
     projects  = "/projects/:slug/"
     notes     = "/notes/:slug/"
+    learning  = "/learning/:slug/"
+    life      = "/life/:slug/"
 
 [taxonomies]
   tag = "tags"
+
+# 相關文章。主要靠共同標籤，日期只當同分微調 ——
+# 「同一個主題」比「同一週寫的」有意義得多。
+# threshold 40 是刻意偏高的：寧可一篇都不推，也不要推一篇明顯不相關的。
+[related]
+  includeNewer = true
+  threshold = 40
+  toLower = false
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "date"
+    weight = 10
 
 [services]
   [services.googleAnalytics]
@@ -68,14 +97,9 @@ summaryLength = 60
   section = ["HTML"]
 
 [menu]
-  [[menu.main]]
-    name = "踩坑"
-    url = "/pitfalls/"
-    weight = 10
-  [[menu.main]]
-    name = "架構決策"
-    url = "/decisions/"
-    weight = 20
+  # 踩坑（/pitfalls/）與架構決策（/decisions/）刻意不放進選單 ——
+  # 這兩類直接用搜尋頁的分類快選就夠了。頁面本身仍然存在、仍然可以連，
+  # 只是不從導覽進去。搜尋頁的 chip 是另一份清單，不受這裡影響。
   [[menu.main]]
     name = "專案"
     url = "/projects/"
@@ -84,6 +108,18 @@ summaryLength = 60
     name = "速查"
     url = "/notes/"
     weight = 40
+  [[menu.main]]
+    name = "學習筆記"
+    url = "/learning/"
+    weight = 41
+  [[menu.main]]
+    name = "生活紀錄"
+    url = "/life/"
+    weight = 42
+  [[menu.main]]
+    name = "最新"
+    url = "/latest/"
+    weight = 5
   [[menu.main]]
     name = "搜尋"
     url = "/search/"

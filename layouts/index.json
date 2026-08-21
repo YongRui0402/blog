@@ -12,12 +12,14 @@
 
   欄位縮寫是為了縮小檔案（每一筆都會重複這些 key）：
     t 標題 / u 網址 / s 分類 / g 標籤 / d 描述 / b 內文 / dt 日期 / dr 草稿
+    c 封面縮圖網址（沒有就省略這個 key）
 */ -}}
-{{- $sections := slice "pitfalls" "decisions" "projects" "notes" -}}
+{{- $sections := slice "pitfalls" "decisions" "projects" "notes" "learning" "life" -}}
 {{- $pages := where .Site.RegularPages "Section" "in" $sections -}}
 {{- $index := slice -}}
 {{- range $pages.ByDate.Reverse -}}
-  {{- $index = $index | append (dict
+  {{- $cover := partial "cover-res.html" (dict "ctx" . "size" "thumb") -}}
+  {{- $entry := dict
       "t"  .Title
       "u"  .RelPermalink
       "s"  .Section
@@ -26,6 +28,8 @@
       "dt" (.Date.Format "2006-01-02")
       "dr" .Draft
       "b"  (substr .RawContent 0 24000)
-  ) -}}
+  -}}
+  {{- with $cover }}{{ $entry = merge $entry (dict "c" .RelPermalink) }}{{ end -}}
+  {{- $index = $index | append $entry -}}
 {{- end -}}
 {{- $index | jsonify -}}

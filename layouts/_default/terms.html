@@ -1,0 +1,23 @@
+{{ define "main" }}
+{{- /* 標籤總覽。Hugo 本來就會產這頁，但站上沒有任何地方連得到它 ——
+       只能從某篇文章的標籤點進去、再手動把網址砍短。這頁補上入口。
+
+       依「掛了幾篇」由多到少排，同筆數再依名稱，讓常用的標籤浮在上面。 */}}
+<header class="list-head">
+  <h1>{{ .Title }}</h1>
+  <p class="muted">共 {{ len .Data.Terms }} 個標籤。數字是掛了幾篇。</p>
+</header>
+
+{{- $terms := .Data.Terms.ByCount }}
+{{- if $terms }}
+<div class="chips tagcloud">
+  {{- range $terms }}
+  <a class="chip" href="{{ .Page.RelPermalink }}">
+    {{ partial "term-name.html" (dict "term" .Term "page" (index .Pages 0)) }}<span class="chip-n">{{ .Count }}</span>
+  </a>
+  {{- end }}
+</div>
+{{- else }}
+<p class="muted">還沒有標籤。</p>
+{{- end }}
+{{ end }}
