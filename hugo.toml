@@ -128,3 +128,21 @@ summaryLength = 60
     name = "關於"
     url = "/about/"
     weight = 50
+
+# 草稿集中在 repo 根目錄的 drafts/<section>/，用 mounts 掛回 content/。
+# 為什麼不直接放 content/drafts/：Hugo 的 section 由 content/ 底下第一層目錄
+# 決定，那樣做全部草稿的分類都會變成「drafts」—— 圖示、permalink、搜尋索引、
+# 相關文章一起錯，而且發布時搬回去網址還會再變一次。
+# 掛載的好處不只是好管理：drafts/ 不在 sync-to-public.py 的 INCLUDE 裡，
+# 草稿變成「物理上不會被複製出去」，不再只靠 publish/draft 閘門擋。
+#
+# ⚠️ 定義了 content 的 mounts 之後，Hugo 就不會再自動掛 content/ ——
+# 兩條都要寫滿。assets / static / layouts 沒被覆蓋，維持預設。
+# 公開 repo 沒有 drafts/ 這個目錄，來源不存在時 Hugo 直接略過（實測不會失敗）。
+[module]
+  [[module.mounts]]
+    source = "content"
+    target = "content"
+  [[module.mounts]]
+    source = "drafts"
+    target = "content"
