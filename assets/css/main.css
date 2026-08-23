@@ -130,6 +130,50 @@ h1 .sect-icon { width: .82em; height: .82em; color: var(--fg-muted); }
   margin-bottom: 1.5rem;
 }
 
+/* ---------- 閱讀進度條 ---------- */
+
+/* 只在文章頁輸出(見 baseof.html)。固定在最頂,不佔版面高度。 */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 50;
+  pointer-events: none;   /* 不要擋住底下的連結 */
+}
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  /* 只動 transform,不動 width —— 後者每次捲動都會觸發版面重算 */
+  will-change: transform;
+}
+
+/* ---------- 分享 ---------- */
+
+.share { margin: 2.5rem 0 0; }
+.share-t {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--fg-muted);
+  font-weight: 600;
+  margin: 0 0 .5rem;
+}
+.share-btns { display: flex; gap: .5rem; flex-wrap: wrap; }
+.share-btns button {
+  font: inherit;
+  font-size: .85rem;
+  padding: .35rem .9rem;
+  color: var(--fg-muted);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.share-btns button:hover { color: var(--fg); border-color: var(--fg-muted); }
+.share-btns button.ok { color: var(--accent); border-color: var(--accent); }
+
 /* ---------- 留言 ---------- */
 
 .comments { margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }

@@ -95,6 +95,8 @@
   </p>
   {{- end }}
 
+  {{- partial "share.html" . }}
+
   {{- /* 相關文章。判準在 hugo.toml 的 [related]：主要看共同標籤。
          一篇都算不出來時整段不顯示 —— 硬湊出來的「相關」比沒有更糟。 */}}
   {{- $related := first 3 (.Site.RegularPages.Related .) }}
