@@ -100,6 +100,17 @@ summaryLength = 60
   # 踩坑（/pitfalls/）與架構決策（/decisions/）刻意不放進選單 ——
   # 這兩類直接用搜尋頁的分類快選就夠了。頁面本身仍然存在、仍然可以連，
   # 只是不從導覽進去。搜尋頁的 chip 是另一份清單，不受這裡影響。
+  # 學習筆記（/learning/）與生活紀錄（/life/）2026-08-28 同樣摘下 ——
+  # 兩個分類目前零文章，選單掛著空殼只會讓訪客點進「（無）」；
+  # permalink 與 _index.md 都留著，有第一篇文章時把下面註解解開即可。
+  #   [[menu.main]]
+  #     name = "學習筆記"
+  #     url = "/learning/"
+  #     weight = 41
+  #   [[menu.main]]
+  #     name = "生活紀錄"
+  #     url = "/life/"
+  #     weight = 42
   [[menu.main]]
     name = "專案"
     url = "/projects/"
@@ -108,14 +119,6 @@ summaryLength = 60
     name = "速查"
     url = "/notes/"
     weight = 40
-  [[menu.main]]
-    name = "學習筆記"
-    url = "/learning/"
-    weight = 41
-  [[menu.main]]
-    name = "生活紀錄"
-    url = "/life/"
-    weight = 42
   [[menu.main]]
     name = "最新"
     url = "/latest/"
