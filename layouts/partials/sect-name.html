@@ -1,2 +1,0 @@
-{{- /* 分類的中文名。取 section 首頁的 title，不另外維護對照表。 */ -}}
-{{- with .Site.GetPage (printf "/%s" .Section) }}{{ .Title }}{{ end -}}

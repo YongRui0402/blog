@@ -1,9 +1,0 @@
-{{- /* 文章封面。用法：{{ partial "cover.html" (dict "ctx" . "size" "thumb") }}
-       來源判斷在 cover-res.html，這裡只負責畫出來。
-       沒有封面就什麼都不輸出 —— 那不是錯誤，版面照常。 */ -}}
-{{- $size := default "thumb" .size -}}
-{{- with partial "cover-res.html" . -}}
-<img class="cover cover-{{ $size }}" src="{{ .RelPermalink }}"
-     width="{{ .Width }}" height="{{ .Height }}"
-     loading="lazy" decoding="async" alt="">
-{{- end -}}
